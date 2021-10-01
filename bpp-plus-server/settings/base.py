@@ -14,25 +14,22 @@ from pathlib import Path
 from datetime import timedelta
 import json
 import os
+import environ
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+env = environ.Env(
+    DEBUG=(bool, False)
+)
 
-secret_file = os.path.join(BASE_DIR, 'secrets.json')  # secrets.json 파일 위치를 명시
-with open(secret_file) as f:
-    secrets = json.loads(f.read())
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
-def get_secret(setting, secrets=secrets):
-    try:
-        return secrets[setting]
-    except KeyError:
-        error_msg = "Set the {} environment variable".format(setting)
-        raise 
-        # raise ImproperlyConfigured(error_msg)
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = env('DJANGO_SECRET_KEY')
+DEBUG = env('DEBUG')
 
-
-SECRET_KEY = get_secret("SECRET_KEY")
 
 
 # Quick-start development settings - unsuitable for production
@@ -43,7 +40,7 @@ SECRET_KEY = get_secret("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -135,16 +132,6 @@ WSGI_APPLICATION = 'bpp-plus-server.wsgi.application'
 #     }
 # }
 
-DATABASES = {
-  'default': {
-    'ENGINE': 'django.db.backends.mysql',
-    'NAME': get_secret("DB_NAME"),
-    'USER': get_secret("DB_USER"),
-    'PASSWORD': get_secret("DB_PASSWORD"),
-    'HOST': get_secret("DB_HOST"),
-    'PORT': '3306',
-   }
-}
 
 
 # Password validation
@@ -221,4 +208,6 @@ ACCOUNT_LOGOUT_ON_GET = True  # 로그아웃 설정
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'login.serializers.CustomUserDetailsSerializer'}
 
+
+# custom user
 AUTH_USER_MODEL = 'login.User'
