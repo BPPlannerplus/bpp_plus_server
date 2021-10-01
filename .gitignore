@@ -337,6 +337,6 @@ pip-selfcheck.json
 .idea
 
 # 보안키
-secrets.json
+.env
 django.crt
 django.key
