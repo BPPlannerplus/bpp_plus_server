@@ -1,0 +1,41 @@
+version: '3'
+services:
+
+  db:
+    container_name: db
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: 'suy2on'
+      POSTGRES_PASSWORD: 1234
+    expose:
+      - 5432
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    volumes:
+      - dbdata:/var/lib/postgres
+
+  web:
+    container_name: web
+    build: .
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      DATABASE_NAME: bppserver
+      DATABASE_USER: 'bppplus'
+      DATABASE_PASSWORD: bppplus
+      DATABASE_PORT: 5432
+      DATABASE_HOST: db
+      DJANGO_SETTINGS_MODULE: django-rest-framework-14th.settings.dev
+    restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+volumes:
+  app:
+  dbdata:
