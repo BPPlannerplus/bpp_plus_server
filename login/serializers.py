@@ -20,9 +20,11 @@ from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from .models import User
-from config.settings import get_secret
+import environ
 
-
+env = environ.Env(
+    DEBUG=(bool, False)
+)
 # https://github.com/Tivix/django-rest-auth/blob/master/rest_auth/registration/serializers.py
 # kakao social login 커스터마이징용
 class SocialLoginSerializer(serializers.Serializer):
@@ -137,7 +139,7 @@ class SocialLoginSerializer(serializers.Serializer):
             login.save(request, connect=True)
 
         login.account.user.uid = login.account.uid  # uid 넣어주기
-        login.account.user.password = get_secret("PASSWORD_HASH")  # password 넣기
+        login.account.user.password = env("PASSWORD_HASH")  # password 넣기
         attrs['user'] = login.account.user
         login.account.user.save()  # uid 넣어준거 저장
         return attrs
