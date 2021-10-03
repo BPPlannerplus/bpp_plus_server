@@ -3,7 +3,7 @@ from django.db.models.enums import Choices
 from multiselectfield import MultiSelectField
 from shop.models import *
 from login.models import *
-from config.validators import validate_file_size
+from .validators import validate_file_size
 # CHOICES(https://pypi.org/project/django-multiselectfield/)
 HEAD_COUNT_CHOICES = (
     (1, '1인'),

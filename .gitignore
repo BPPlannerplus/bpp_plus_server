@@ -329,7 +329,7 @@ fabric.properties
 [Ll]ib
 [Ll]ib64
 [Ll]ocal
-[Ss]cripts
+#[Ss]cripts
 pyvenv.cfg
 pip-selfcheck.json
 
@@ -337,6 +337,6 @@ pip-selfcheck.json
 .idea
 
 # 보안키
-secrets.json
+.env
 django.crt
 django.key
