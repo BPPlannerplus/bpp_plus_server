@@ -1,6 +1,6 @@
 from django.db import models
 from login.models import *
-from config.validators import validate_file_size
+from .validators import validate_file_size
 
 class Shop(TimeStampMixin):
     STUDIO = 0  # 0 대신 SHOP.STUDIO로 쓰기위해

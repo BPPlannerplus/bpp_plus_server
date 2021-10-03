@@ -15,7 +15,11 @@ import string
 from .models import *
 import datetime
 from django.utils import timezone
-from config.settings import get_secret
+import environ
+
+env = environ.Env(
+    DEBUG=(bool, False)
+)
 
 char_string = string.ascii_letters + string.digits
 
@@ -51,7 +55,7 @@ def new_token(request):
         if response.status_code == status.HTTP_200_OK:
             uid = response.json()['user']['uid']  #kakao가 넘겨준 정보중 uid빼오기 
             new_body = json.loads(requests.post(
-                'https://localhost:8000/login/token/', data={"uid": uid, "password": get_secret("PASSWORD")}).content)  # jwt 토큰생성
+                'https://localhost:8000/login/token/', data={"uid": uid, "password": env("PASSWORD")}).content)  # jwt 토큰생성
             user = get_object_or_404(User, uid=uid)
             user.refresh = getRandomString(200)  # secure random string -> refresh token 
             user.exp = datetime.datetime.now() + datetime.timedelta(days=7)  # refresh 유효기간 저장 
