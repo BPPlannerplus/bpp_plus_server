@@ -28,7 +28,7 @@ services:
       DATABASE_PASSWORD: bppplus
       DATABASE_PORT: 5432
       DATABASE_HOST: db
-      DJANGO_SETTINGS_MODULE: django-rest-framework-14th.settings.dev
+      DJANGO_SETTINGS_MODULE: bpp-plus-server.settings.dev
     restart: always
     ports:
       - "8000:8000"
