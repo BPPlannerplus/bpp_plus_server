@@ -15,14 +15,24 @@ import string
 from .models import *
 import datetime
 from django.utils import timezone
-import environ
+import os,environ
+
+
 
 env = environ.Env(
+    # set casting, default value
     DEBUG=(bool, False)
 )
 
-char_string = string.ascii_letters + string.digits
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+# reading .env file
+environ.Env.read_env(
+    env_file=os.path.join(BASE_DIR, '.env')
+)
+
+char_string = string.ascii_letters + string.digits
 
 def getRandomString(size):
     return ''.join(secrets.choice(char_string) for _ in range(size))
@@ -79,7 +89,7 @@ def refresh_token(request):
 
         if user.exp > timezone.now():  # 유효할때
             new_body = json.loads(requests.post(
-                'https://localhost:8000/login/token/', data={"uid": user.uid, "password": get_secret("PASSWORD")}).content)  # jwt 토큰생성
+                'https://localhost:8000/login/token/', data={"uid": user.uid, "password": env("PASSWORD")}).content)  # jwt 토큰생성
             del new_body['refresh']  # refresh token 제거
             return Response(new_body)
 
