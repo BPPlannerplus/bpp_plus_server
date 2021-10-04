@@ -20,11 +20,8 @@ from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from .models import User
-import environ
+from .views import *
 
-env = environ.Env(
-    DEBUG=(bool, False)
-)
 # https://github.com/Tivix/django-rest-auth/blob/master/rest_auth/registration/serializers.py
 # kakao social login 커스터마이징용
 class SocialLoginSerializer(serializers.Serializer):
