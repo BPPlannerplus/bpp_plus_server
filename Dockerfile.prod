@@ -15,7 +15,7 @@ ENV PYTHONUNBUFFERED 1
 # install psycopg2 dependencies
 RUN apk update \
     && apk add postgresql-dev gcc python3-dev musl-dev zlib-dev jpeg-dev build-base linux-headers pcre-dev
-    
+
 
 # install dependencies
 COPY ./requirements.txt .
@@ -48,7 +48,6 @@ RUN apk update && apk add libpq
 COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt .
 RUN pip install --no-cache /wheels/*
-RUN apk del build-deps
 
 # copy entrypoint-prod.sh
 COPY ./config/docker/entrypoint.prod.sh $APP_HOME
