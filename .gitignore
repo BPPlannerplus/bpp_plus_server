@@ -340,3 +340,4 @@ pip-selfcheck.json
 .env
 django.crt
 django.key
+.env.prod
