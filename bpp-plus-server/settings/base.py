@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'concept',
     'reservation',
     'login',
+    'review',
 
     'rest_framework',
 
