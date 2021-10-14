@@ -338,6 +338,4 @@ pip-selfcheck.json
 
 # 보안키
 .env
-django.crt
-django.key
 .env.prod
