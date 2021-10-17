@@ -67,10 +67,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.kakao',
 
     # crontab
-    'django_crontab',
-
-    # https
-    # 'sslserver',
+    'django_crontab'
 ]
 
 CRONJOBS = [
@@ -117,17 +114,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'bpp-plus-server.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
 
 
 
