@@ -8,6 +8,11 @@ class OneUserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'username')
 
+class OneReviewSerializer(serializers.ModelSerializer):
+
+     class Meta:
+        model = Review
+        fields = "__all__"
 
 
 class OneShopReviewSerializer(serializers.ModelSerializer):
