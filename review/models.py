@@ -19,6 +19,7 @@ class Review(TimeStampMixin):
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name="reviews")
     score = models.IntegerField()
     contents = models.TextField()
+    date = models.DateTimeField(auto_now_add=True)
 
 
 class Complain(TimeStampMixin):
