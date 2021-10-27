@@ -92,3 +92,5 @@ class ShopDetailConcept(APIView, PageNumberPagination):
         else:  # shop이 beautyshop일때
             serializer = OneBeautyShopConceptSerializer(result_page, many=True, context={"request": request})
         return self.get_paginated_response(serializer.data)
+
+
