@@ -25,5 +25,5 @@ class Complain(TimeStampMixin):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     review = models.ForeignKey(Review, on_delete=models.CASCADE)
     reason = MultiSelectField(choices=COMPLAIN_CHOCIE)
-    content = models.TextField()
+    contents = models.TextField()
 

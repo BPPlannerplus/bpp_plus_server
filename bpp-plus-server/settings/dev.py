@@ -14,5 +14,3 @@ DATABASES = {
         'PORT': env('DATABASE_PORT'),
     }
 }
-
-SECURE_SSL_REDIRECT = False
