@@ -20,25 +20,23 @@ class ShopList(APIView, PageNumberPagination):
         else:  # url잘못입력
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        user = get_user(request)  # access_token에서 user 누군지 꺼내기
-
         # like parameter 따로 없으면 false로
-        like = request.query_params.get('like', 'false')
-        if like == 'true':
-            shops = user.like_shops.all()  # user가 찜한 shop들
-        else:  # TODO 여기서 쿼리개선필요
-            shops = Shop.objects.all()  # 찜관련 없이 모든 shop들
+        # like = request.query_params.get('like', 'false')
+        # if like == 'true':
+        #     shops = user.like_shops.all()  # user가 찜한 shop들
+        # else:  # TODO 여기서 쿼리개선필요
+
 
         # request parameter의 address가져오기(없다면 빈문자열로 가져오기)
         address = request.query_params.get('address', '')
         if address:
-            studios = shops.filter(shop_type=shop_type, address=address).order_by('-like_count')  # 좋아요수 내림차순으로
+            shops = Shop.objects.filter(shop_type=shop_type, address=address).order_by('-like_count')  # 좋아요수 내림차순으로
         else:
-            studios = shops.filter(shop_type=shop_type).order_by('-like_count')  # 좋아요수 내림차순으로
+            shops = Shop.objects.filter(shop_type=shop_type).order_by('-like_count')  # 좋아요수 내림차순으로
 
         self.page_size = 20
-        result_page = self.paginate_queryset(studios, request, view=self)
-        serializer = ShopSerializer(result_page, many=True, context={"request": request, "user": user})
+        result_page = self.paginate_queryset(shops, request, view=self)
+        serializer = ShopSerializer(result_page, many=True, context={"request": request})
         return self.get_paginated_response(serializer.data)
 
 
@@ -94,3 +92,5 @@ class ShopDetailConcept(APIView, PageNumberPagination):
         else:  # shop이 beautyshop일때
             serializer = OneBeautyShopConceptSerializer(result_page, many=True, context={"request": request})
         return self.get_paginated_response(serializer.data)
+
+
