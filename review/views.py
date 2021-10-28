@@ -27,6 +27,9 @@ class ReviewList(APIView, PageNumberPagination):
 
 
 
+
+
+
 class ReviewDetail(APIView):
     def get(self, request, pk):
         review = get_object_or_404(Review, pk=pk)
@@ -34,7 +37,19 @@ class ReviewDetail(APIView):
 
         return Response(data=serialzer.data)
 
-# 삭제 + 수정
+    def patch(self, request, pk):
+        review = get_object_or_404(Review, pk=pk)
+        serializer = OneReviewSerializer(review, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        review = get_object_or_404(Review, pk= pk)
+        review.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 
