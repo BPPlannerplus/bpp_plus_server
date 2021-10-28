@@ -34,7 +34,7 @@ class ReviewDetail(APIView):
 
         return Response(data=serialzer.data)
 
-# 삭제 + 수정 
+# 삭제 + 수정
 
 
 
