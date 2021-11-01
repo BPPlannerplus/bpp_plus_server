@@ -33,9 +33,9 @@ class ReviewList(APIView, PageNumberPagination):
 class ReviewDetail(APIView):
     def get(self, request, pk):
         review = get_object_or_404(Review, pk=pk)
-        serialzer = OneReviewSerializer(review, context={"request": request})
+        serializer = OneReviewSerializer(review, context={"request": request})
 
-        return Response(data=serialzer.data)
+        return Response(data=serializer.data)
 
     def patch(self, request, pk):
         review = get_object_or_404(Review, pk=pk)
