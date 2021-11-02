@@ -39,7 +39,7 @@ class Migration(migrations.Migration):
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('reason', multiselectfield.db.fields.MultiSelectField(choices=[('abuse', '음란, 욕설 등 부적절한 내용'), ('ads', '부적절한 홍보 또는 광고 내용'), ('privacy', '개인 정보 노출'), ('illegal', '불법 정보 기재'), ('etc', '기타(직접입력)')], max_length=29)),
                 ('content', models.TextField()),
-                ('review', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='review.review')),
+                ('review', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='cs.review')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
             options={
