@@ -15,7 +15,7 @@ class StudioConceptSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = StudioConcept
-        fields = ('id', 'profile', 'shop', 'like')
+        fields = ('id', 'profile', 'shop')
 
     # def is_like(self, obj): # user가 특정 concept에 찜을 했는지
     #     if LikeStudioConcept.objects.filter(studio_concept=obj.id, user=self.context['user'].id):
