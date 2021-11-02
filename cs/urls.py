@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import *
 
-app_name = 'review'
+app_name = 'cs'
 
 urlpatterns = [
     path('shops/<int:pk>', ReviewList.as_view()),  # 특정 shop 리뷰전체조회, 추가
