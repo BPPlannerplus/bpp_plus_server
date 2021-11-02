@@ -18,7 +18,7 @@ class Review(TimeStampMixin):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reviews")
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name="reviews")
     score = models.IntegerField()
-    contents = models.TextField()
+    contents = models.TextField(null=True, blank=True)
     date = models.DateTimeField(auto_now_add=True)
 
 
