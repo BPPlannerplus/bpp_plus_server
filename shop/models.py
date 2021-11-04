@@ -5,9 +5,14 @@ from .validators import validate_file_size
 class Shop(TimeStampMixin):
     STUDIO = 0  # 0 대신 SHOP.STUDIO로 쓰기위해
     BEAUTYSHOP = 1  # 1 대신 SHOP.BEAUTYSHOP로 쓰기위해
+    WAXINGSHOP = 2 # 2 대신 SHOP.WAXINGSHOP으로 쓰기위해
+    TANNINGSHOP = 3 # 3 대신 SHOP.TANNINGSHOP으로 쓰기위해
     SHOP_TYPE_CHOICES = (
         (STUDIO, 'studio'),
         (BEAUTYSHOP, 'beautyshop'),
+        (WAXINGSHOP, 'waxingshop'),
+        (TANNINGSHOP, 'tanningshop'),
+
     )
 
     ADDRESS_CHOICES = (
