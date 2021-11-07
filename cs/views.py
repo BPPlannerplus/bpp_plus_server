@@ -12,6 +12,8 @@ class ReviewList(APIView, PageNumberPagination):
     def get(self, request, pk):
         self.page_size = 20
         reviews = Review.objects.filter(shop=pk)
+        if not reviews:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         result_page = self.paginate_queryset(reviews, request, view=self)
         serializer = OneShopReviewSerializer(result_page, many=True, context={"request": request})
 
@@ -49,17 +51,17 @@ class ReviewDetail(APIView):
         review = get_object_or_404(Review, pk= pk)
         review.delete()
 
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({"result":"Delete completed"}, status=status.HTTP_204_NO_CONTENT)
 
 
 
-class ComplainDetail(APIView):
+class ComplainList(APIView):
     def post(self, request, pk):
         user = get_user(request)
         reason = json.loads(request.body.decode('utf-8')).get('reason')
         contents = json.loads(request.body.decode('utf-8')).get('contents')
         Complain.objects.create(user=user.id, review=pk, reason= reason, contents=contents)
 
-        return Response(status=status.HTTP_201_CREATED)
+        return Response({"result":"create complain"}, status=status.HTTP_201_CREATED)
 
 

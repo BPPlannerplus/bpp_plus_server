@@ -17,7 +17,11 @@ class ShopList(APIView, PageNumberPagination):
             shop_type = Shop.STUDIO
         elif request_shop_type == "beautyshops":  # beautyshop 전체목록 조회
             shop_type = Shop.BEAUTYSHOP
-        else:  # url잘못입력
+        elif request_shop_type == "waxingshops":   # waxingshop 전체목록 조회
+            shop_type = Shop.WAXINGSHOP
+        elif request_shop_type == "tanningshops" :  # tanningshop 전체목록 조회
+            shop_type = Shop.TANNINGSHOP
+        else: # url잘못입력
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         # like parameter 따로 없으면 false로
