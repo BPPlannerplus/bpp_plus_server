@@ -13,6 +13,7 @@ from login.views import get_user
 # studio 혹은 beautyshop 전체 목록
 class ShopList(APIView, PageNumberPagination):
     def get(self, request, request_shop_type):
+        # shop 타입 결정
         if request_shop_type == "studios":  # studio 전체목록 조회
             shop_type = Shop.STUDIO
         elif request_shop_type == "beautyshops":  # beautyshop 전체목록 조회
@@ -24,19 +25,20 @@ class ShopList(APIView, PageNumberPagination):
         else: # url잘못입력
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        # like parameter 따로 없으면 false로
-        # like = request.query_params.get('like', 'false')
-        # if like == 'true':
-        #     shops = user.like_shops.all()  # user가 찜한 shop들
-        # else:  # TODO 여기서 쿼리개선필요
+        # 찜 조회일 때
+        like = request.query_params.get('like', 'false')
+        if like == 'true':
+            user = get_user(request)
+            shops = user.like_shops.filter(shop_type = shop_type) # user가 찜한 shop들
 
-
-        # request parameter의 address가져오기(없다면 빈문자열로 가져오기)
-        address = request.query_params.get('address', '')
-        if address:
-            shops = Shop.objects.filter(shop_type=shop_type, address=address).order_by('-like_count')  # 좋아요수 내림차순으로
+        # 찜 조회 아닐 때
         else:
-            shops = Shop.objects.filter(shop_type=shop_type).order_by('-like_count')  # 좋아요수 내림차순으로
+            # request parameter의 address가져오기(없다면 빈문자열로 가져오기)
+            address = request.query_params.get('address', '')
+            if address:
+                shops = Shop.objects.filter(shop_type=shop_type, address=address).order_by('-like_count')  # 좋아요수 내림차순으로
+            else:
+                shops = Shop.objects.filter(shop_type=shop_type).order_by('-like_count')  # 좋아요수 내림차순으로
 
         self.page_size = 20
         result_page = self.paginate_queryset(shops, request, view=self)
