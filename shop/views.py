@@ -25,10 +25,12 @@ class ShopList(APIView, PageNumberPagination):
         else: # url잘못입력
             return Response(status=status.HTTP_404_NOT_FOUND)
 
+        # user 정보얻기 
+        user = get_user(request)
+
         # 찜 조회일 때
         like = request.query_params.get('like', 'false')
         if like == 'true':
-            user = get_user(request)
             shops = user.like_shops.filter(shop_type = shop_type) # user가 찜한 shop들
 
         # 찜 조회 아닐 때
@@ -42,7 +44,7 @@ class ShopList(APIView, PageNumberPagination):
 
         self.page_size = 20
         result_page = self.paginate_queryset(shops, request, view=self)
-        serializer = ShopSerializer(result_page, many=True, context={"request": request})
+        serializer = ShopSerializer(result_page, many=True, context={"request": request, "user": user})
         return self.get_paginated_response(serializer.data)
 
 
