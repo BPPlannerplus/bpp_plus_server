@@ -25,7 +25,7 @@ class ShopList(APIView, PageNumberPagination):
         else: # url잘못입력
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        # user 정보얻기 
+        # user 정보얻기
         user = get_user(request)
 
         # 찜 조회일 때
