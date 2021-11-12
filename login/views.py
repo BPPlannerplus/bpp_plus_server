@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework import status
 import json
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from .serializers import SocialLoginSerializer, MyTokenObtainPairSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
 import secrets
@@ -16,6 +17,7 @@ from .models import *
 import datetime
 from django.utils import timezone
 import os,environ
+
 
 
 
@@ -53,27 +55,26 @@ def get_user(request):
 @api_view(['POST'])
 def new_token(request):
     # request에 있는 access_token값
-    access_token = json.loads(request.body.decode('utf-8')).get('access_token')
+    user_info = json.loads(request.body.decode('utf-8')).get('user_info')
 
-    # POST이면서 request에 access_token이 있을때
-    if request.method == 'POST' and access_token != None:
-        url = "https://localhost:8000/login/rest-auth/kakao/"
-        headers = {'Content-Type': 'application/json'}
-        data = {"access_token": access_token}
-        response = requests.post(url, headers=headers, data=json.dumps(data))
+    # # POST이면서 request에 access_token이 있을때
+    if user_info != None:
+        uid = user_info['uid']  #kakao가 넘겨준 정보중 uid빼오기
+        # simple jwt api 내부구현
+        jwt_serializer = MyTokenObtainPairSerializer(data={"uid": uid, "password": env("PASSWORD")})
+        try:
+            jwt_serializer.is_valid(raise_exception=True)
+        except TokenError as e:
+            raise InvalidToken(e.args[0])
 
-        if response.status_code == status.HTTP_200_OK:
-            uid = response.json()['user']['uid']  #kakao가 넘겨준 정보중 uid빼오기 
-            new_body = json.loads(requests.post(
-                'https://localhost:8000/login/token/', data={"uid": uid, "password": env("PASSWORD")}).content)  # jwt 토큰생성
-            user = get_object_or_404(User, uid=uid)
-            user.refresh = getRandomString(200)  # secure random string -> refresh token 
-            user.exp = datetime.datetime.now() + datetime.timedelta(days=7)  # refresh 유효기간 저장 
-            user.save()
-            new_body["refresh"] = user.refresh  # refresh token 수정
-            return Response(new_body)  # secure random string refreash , access token 전달
-        else:
-            return Response({"detail": "kakao response status code is not 200","status":response.status_code, "response":response.text}, status=status.HTTP_400_BAD_REQUEST)
+        new_body = jwt_serializer.validated_data
+        user = get_object_or_404(User, uid=uid)
+        user.refresh = getRandomString(200)  # secure random string -> refresh token
+        user.exp = datetime.datetime.now() + datetime.timedelta(days=7)  # refresh 유효기간 저장
+        user.save()
+        new_body["refresh"] = user.refresh  # refresh token 수정
+        return Response(new_body)  # secure random string refreash , access token 전달
+
     else:
         return Response({"detail": "access_token not exist"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -88,8 +89,13 @@ def refresh_token(request):
     if refresh_token == user.refresh:
 
         if user.exp > timezone.now():  # 유효할때
-            new_body = json.loads(requests.post(
-                'https://localhost:8000/login/token/', data={"uid": user.uid, "password": env("PASSWORD")}).content)  # jwt 토큰생성
+            jwt_serializer = MyTokenObtainPairSerializer(data={"uid": user.uid, "password": env("PASSWORD")})
+            try:
+                jwt_serializer.is_valid(raise_exception=True)
+            except TokenError as e:
+                raise InvalidToken(e.args[0])
+
+            new_body = jwt_serializer.validated_data
             del new_body['refresh']  # refresh token 제거
             return Response(new_body)
 
