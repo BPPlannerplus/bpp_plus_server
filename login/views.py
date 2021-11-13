@@ -2,14 +2,13 @@ from allauth.socialaccount.providers.kakao.views import KakaoOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from django.shortcuts import get_object_or_404
 from rest_auth.registration.views import SocialLoginView
-import requests
+from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 import json
-from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
-from .serializers import SocialLoginSerializer, MyTokenObtainPairSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
+from .serializers import SocialLoginSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
 import secrets
 import string
@@ -17,6 +16,7 @@ from .models import *
 import datetime
 from django.utils import timezone
 import os,environ
+
 
 
 
@@ -52,31 +52,27 @@ def get_user(request):
                         data={"error": "no token is provided in the header or the header is missing"})
     
     
-@api_view(['POST'])
-def new_token(request):
-    # request에 있는 access_token값
-    user_info = json.loads(request.body.decode('utf-8')).get('user_info')
+# @api_view(['POST'])
+# def new_token(request):
+class new_token(APIView):
 
-    # # POST이면서 request에 access_token이 있을때
-    if user_info != None:
-        uid = user_info['uid']  #kakao가 넘겨준 정보중 uid빼오기
-        # simple jwt api 내부구현
-        jwt_serializer = MyTokenObtainPairSerializer(data={"uid": uid, "password": env("PASSWORD")})
-        try:
-            jwt_serializer.is_valid(raise_exception=True)
-        except TokenError as e:
-            raise InvalidToken(e.args[0])
+    def post(self, request):
+        # request에 있는 access_token값
+        user_info = json.loads(request.body.decode('utf-8')).get('user_info')
 
-        new_body = jwt_serializer.validated_data
-        user = get_object_or_404(User, uid=uid)
-        user.refresh = getRandomString(200)  # secure random string -> refresh token
-        user.exp = datetime.datetime.now() + datetime.timedelta(days=7)  # refresh 유효기간 저장
-        user.save()
-        new_body["refresh"] = user.refresh  # refresh token 수정
-        return Response(new_body)  # secure random string refreash , access token 전달
+        # # POST이면서 request에 access_token이 있을때
+        if user_info != None:
+            user = get_object_or_404(User, uid=user_info['uid'])
+            # simple jwt api 내부구현
+            token = RefreshToken.for_user(user).access_token
 
-    else:
-        return Response({"detail": "access_token not exist"}, status=status.HTTP_400_BAD_REQUEST)
+            user.refresh = getRandomString(200)  # secure random string -> refresh token
+            user.exp = datetime.datetime.now() + datetime.timedelta(days=7)  # refresh 유효기간 저장
+            user.save()
+            return Response({"access_token": str(token), "refresh_token": user.refresh})  # secure random string refreash , access token 전달
+
+        else:
+            return Response({"detail": "access_token not exist"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
@@ -89,15 +85,8 @@ def refresh_token(request):
     if refresh_token == user.refresh:
 
         if user.exp > timezone.now():  # 유효할때
-            jwt_serializer = MyTokenObtainPairSerializer(data={"uid": user.uid, "password": env("PASSWORD")})
-            try:
-                jwt_serializer.is_valid(raise_exception=True)
-            except TokenError as e:
-                raise InvalidToken(e.args[0])
-
-            new_body = jwt_serializer.validated_data
-            del new_body['refresh']  # refresh token 제거
-            return Response(new_body)
+            token = RefreshToken.for_user(user).access_token
+            return Response({"access_token": str(token)})
 
         else:  # 만료되었을 때
             msg = {'error message': 'refresh token is expired'}
@@ -126,6 +115,3 @@ class KakaoLogin(SocialLoginView):
         kwargs['context'] = self.get_serializer_context()
         return serializer_class(*args, **kwargs)
 
-
-class MyTokenObtainPairView(TokenObtainPairView):
-    serializer_class = MyTokenObtainPairSerializer
