@@ -158,7 +158,7 @@ class SocialLoginSerializer(serializers.Serializer):
 
 
 
- # customize payload
+#customize payload
 # class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 #     @classmethod
 #     def get_token(cls, user):
