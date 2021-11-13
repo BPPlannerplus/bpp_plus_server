@@ -16,12 +16,11 @@ class OneReviewSerializer(serializers.ModelSerializer):
 
 
 class OneShopReviewSerializer(serializers.ModelSerializer):
+    reserved_user = serializers.SerializerMethodField('user')
 
     class Meta:
         model = Review
-        fields = ("id", "user", "score", "contents", "date")
+        fields = ("id", "reserved_user", "score", "contents", "date")
 
-    def to_representation(self, instance):  # user에서 필요한 정보만 표시
-        response = super().to_representation(instance)
-        response["user"] = OneUserSerializer(instance.user, context={"request": self.context['request']}).data
-        return response
+    def user(self, obj):
+        return obj.reservation.user.username

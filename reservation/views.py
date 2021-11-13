@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from login.views import get_user
+from cs.serializers import *
 
 # 예약전체조회
 class ReservationList(APIView):
@@ -65,3 +66,32 @@ class ReservationDetail(APIView):
                             status=status.HTTP_401_UNAUTHORIZED)
         reservation.delete() #예약 제거
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ReservationReviewDetail(APIView):
+
+    def get(self, request, pk):
+        reservation = get_object_or_404(Reservation, pk=pk)
+        if reservation.state != Reservation.REVIEWED:
+            return Response(data={"detail" : "review dose not exist"}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = OneReviewSerializer(reservation.review, context={"request": request})
+
+
+        return Response(serializer.data)
+
+    def post(self, request, pk):
+        reservation = get_object_or_404(Reservation, pk=pk)
+        if reservation.state != Reservation.UNREVIEWED:
+            return Response(data={"detail": "review already exist"}, status=status.HTTP_400_BAD_REQUEST)
+
+        score = json.loads(request.body.decode('utf-8')).get('score')
+        contents = json.loads(request.body.decode('utf-8')).get('contents')
+        review = Review(score=score, contents=contents)
+        review.save()
+        reservation.review = review
+        reservation.state = Reservation.REVIEWED
+        reservation.save()
+
+        return Response(status=status.HTTP_201_CREATED)
+
