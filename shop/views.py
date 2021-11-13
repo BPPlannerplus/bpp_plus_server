@@ -8,6 +8,7 @@ from .serializers import *
 from concept.serializers import *
 from .models import *
 from login.views import get_user
+from django.db.models import Q
 
 
 # studio 혹은 beautyshop 전체 목록
@@ -36,9 +37,9 @@ class ShopList(APIView, PageNumberPagination):
         # 찜 조회 아닐 때
         else:
             # request parameter의 address가져오기(없다면 빈문자열로 가져오기)
-            address = request.query_params.get('address', '')
-            if address:
-                shops = Shop.objects.filter(shop_type=shop_type, address=address).order_by('-like_count')  # 좋아요수 내림차순으로
+            address_list = request.query_params.getlist('address', '')
+            if address_list:
+                shops = Shop.objects.filter(shop_type=shop_type, address__in = address_list).order_by('-like_count')  # 좋아요수 내림차순으로
             else:
                 shops = Shop.objects.filter(shop_type=shop_type).order_by('-like_count')  # 좋아요수 내림차순으로
 
