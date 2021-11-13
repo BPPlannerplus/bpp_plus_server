@@ -76,10 +76,7 @@ class ReservationReviewDetail(APIView):
             return Response(data={"detail" : "review dose not exist"}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = OneReviewSerializer(reservation.review, context={"request": request})
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
         return Response(serializer.data)
 
@@ -98,4 +95,3 @@ class ReservationReviewDetail(APIView):
 
         return Response(status=status.HTTP_201_CREATED)
 
-    def patch(self, request, pk):
