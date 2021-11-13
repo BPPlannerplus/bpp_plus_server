@@ -5,13 +5,14 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import *
 from login.views import get_user
+from reservation.models import Reservation
 import json
 
 
 class ReviewList(APIView, PageNumberPagination):
     def get(self, request, pk):
         self.page_size = 20
-        reviews = Review.objects.filter(shop=pk)
+        reviews = Review.objects.filter(reservation__shop=pk)
         if not reviews:
             return Response(status=status.HTTP_404_NOT_FOUND)
         result_page = self.paginate_queryset(reviews, request, view=self)
@@ -19,13 +20,6 @@ class ReviewList(APIView, PageNumberPagination):
 
         return self.get_paginated_response(serializer.data)
 
-    def post(self, request, pk):
-        user = get_user(request)
-        score = json.loads(request.body.decode('utf-8')).get('score')
-        contents = json.loads(request.body.decode('utf-8')).get('contents')
-        Review.objects.create(user=user.id, shop=pk, score=score, contents=contents)
-
-        return Response(status=status.HTTP_201_CREATED)
 
 
 
@@ -33,12 +27,6 @@ class ReviewList(APIView, PageNumberPagination):
 
 
 class ReviewDetail(APIView):
-    def get(self, request, pk):
-        review = get_object_or_404(Review, pk=pk)
-        serializer = OneReviewSerializer(review, context={"request": request})
-
-        return Response(data=serializer.data)
-
     def patch(self, request, pk):
         review = get_object_or_404(Review, pk=pk)
         serializer = OneReviewSerializer(review, data=request.data, partial=True)
@@ -49,6 +37,10 @@ class ReviewDetail(APIView):
 
     def delete(self, request, pk):
         review = get_object_or_404(Review, pk= pk)
+        reservation = review.reservation
+        reservation.state = Reservation.UNREVIEWED
+        reservation.save()
+        
         review.delete()
 
         return Response({"result":"Delete completed"}, status=status.HTTP_204_NO_CONTENT)
