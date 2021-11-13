@@ -157,17 +157,18 @@ class SocialLoginSerializer(serializers.Serializer):
         return attrs
 
 
-# customize payload
-class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
-    @classmethod
-    def get_token(cls, user):
-        token = super().get_token(user)
 
-        # Add custom claims
-        token['username'] = user.username
-        token['uid'] = user.uid
-
-        return token
+ # customize payload
+# class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+#     @classmethod
+#     def get_token(cls, user):
+#         token = super().get_token(user)
+#
+#         # Add custom claims
+#         token['username'] = user.username
+#         token['uid'] = user.uid
+#
+#         return token
 
 
 # email기 -> uid바꾸기 
