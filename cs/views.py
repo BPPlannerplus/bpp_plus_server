@@ -13,8 +13,6 @@ class ReviewList(APIView, PageNumberPagination):
     def get(self, request, pk):
         self.page_size = 20
         reviews = Review.objects.filter(reservation__shop=pk)
-        if not reviews:
-            return Response(status=status.HTTP_404_NOT_FOUND)
         result_page = self.paginate_queryset(reviews, request, view=self)
         serializer = OneShopReviewSerializer(result_page, many=True, context={"request": request})
 
