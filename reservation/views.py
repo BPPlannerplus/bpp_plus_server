@@ -29,6 +29,15 @@ class ReservationList(APIView):
         serializer = ReservationSerializer(reservations, many=True, context={"request": request})
         return Response({"remaining_days": remaining_days, "results": serializer.data})
 
+    def delete(self, request):
+        user = get_user(request)
+        inquiry_reservations = user.reservation_set.filter(state=Reservation.INQUIRY)
+        inquiry_reservations.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
 # shop 예약추가
 class AddReservation(APIView):
     def post(self, request, pk):
@@ -82,7 +91,8 @@ class ReservationReviewDetail(APIView):
 
     def post(self, request, pk):
         reservation = get_object_or_404(Reservation, pk=pk)
-        if reservation.state != Reservation.UNREVIEWED:
+        
+        if reservation.state == Reservation.REVIEWED:
             return Response(data={"detail": "review already exist"}, status=status.HTTP_400_BAD_REQUEST)
 
         score = json.loads(request.body.decode('utf-8')).get('score')
