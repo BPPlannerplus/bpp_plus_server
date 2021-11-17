@@ -8,3 +8,7 @@ def reservation_state_change():
         if reservation.state == Reservation.CONFIRMED and reservation.reserved_date < datetime.date.today():
             reservation.state = Reservation.UNREVIEWED
             reservation.save()
+
+def test():
+    print("hello")
+    
