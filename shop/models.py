@@ -20,7 +20,8 @@ class Shop(TimeStampMixin):
         ('gangdong', '강동구'),
         ('gwangjin', '광진구'),
         ('mapo', '마포구'),
-        ('seocho', '서초구')
+        ('seocho', '서초구'),
+        ('yangchun', '양천구')
     )
 
     name = models.CharField(max_length=100)  # shop 이름
