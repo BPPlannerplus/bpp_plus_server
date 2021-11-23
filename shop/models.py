@@ -30,6 +30,7 @@ class Shop(TimeStampMixin):
     minprice = models.IntegerField(null=True,blank=True)  # 최소가격
 
     price_desc = models.ImageField(null=True,blank=True,validators=[validate_file_size])  # 가격설명 사진
+    price_desc_extra = models.ImageField(null=True,blank=True,validators=[validate_file_size]) # 가격설명 여분
     profile = models.ImageField(validators=[validate_file_size])  # 대표사진1
     profile_2 = models.ImageField(validators=[validate_file_size])  # 대표사진2
     profile_3 = models.ImageField(validators=[validate_file_size])  # 대표사진3
