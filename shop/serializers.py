@@ -34,7 +34,7 @@ class OneShopSerializer(serializers.ModelSerializer):
     class Meta:
         model = Shop
         fields = (
-            'id', 'name', 'address_detail', 'minprice', 'price_desc', 'logo', 'profiles', 'map', 'kakaourl', 'affiliates','like',
+            'id', 'name', 'address_detail', 'minprice', 'price_desc', 'price_desc_extra', 'logo', 'profiles', 'map', 'kakaourl', 'affiliates','like',
         )
 
     def is_like(self, obj):  # user가 특정 shop에 찜을 했는지
