@@ -9,6 +9,3 @@ def reservation_state_change():
             reservation.state = Reservation.UNREVIEWED
             reservation.save()
 
-def test():
-    print("hello")
-    

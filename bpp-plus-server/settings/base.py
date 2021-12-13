@@ -72,7 +72,7 @@ INSTALLED_APPS = [
 ]
 
 CRONJOBS = [
-    ('* * * * *', 'reservation.cron.reservation_state_change')
+    ('* * * * *', 'reservation.cron.reservation_state_change', '>> /home/ubuntu/srv/ubuntu/job.log')
 ]
 
 
