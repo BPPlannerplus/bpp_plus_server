@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     'django_crontab'
 ]
 
+# cron job 추가 
 CRONJOBS = [
     ('* * * * *', 'reservation.cron.reservation_state_change', '>> /home/ubuntu/srv/ubuntu/job.log')
     ('* * * * *', 'reservation.cron.hello', '>> /home/ubuntu/srv/ubuntu/hello.log')
