@@ -34,14 +34,14 @@ jobs:
         remote_key: ${{ secrets.KEY }}
 
     - name: delete useless images and containers
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ubuntu
-          key: ${{ secrets.KEY }}
-          script: |
-            sudo yes y | sudo docker image prune
-            sudo yes y | sudo docker container prune
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ubuntu
+        key: ${{ secrets.KEY }}
+        script: |
+          sudo yes y | sudo docker image prune
+          sudo yes y | sudo docker container prune
 
     - name: executing remote ssh commands using password
       uses: appleboy/ssh-action@master
