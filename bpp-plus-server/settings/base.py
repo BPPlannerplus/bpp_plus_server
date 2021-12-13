@@ -72,7 +72,7 @@ INSTALLED_APPS = [
 ]
 
 CRONJOBS = [
-    ('1 0 * * *', 'reservation.cron.reservation_state_change')
+    ('* 0 * * *', 'reservation.cron.reservation_state_change')
 ]
 
 
