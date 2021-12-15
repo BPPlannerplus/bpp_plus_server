@@ -31,6 +31,13 @@ services:
     depends_on:
       - web
 
+  cron:
+    container_name: cron
+    build: ./config/cron
+    depends_on:
+      - web 
+
+
 volumes:
   static:
   media:
