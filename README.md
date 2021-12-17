@@ -7,10 +7,14 @@
     - Python
     - Django
     - Django REST Framework
-    - Crontab
     - JWT
     - AWS EC2
-    - AWS RDS (MySQL)
+    - AWS RDS (Postgresql)
+    - AWS ROUTE53
+    - AWS ELB
+    - AWS ACM
+    - Docker
+   
    ##### 협업
     - Git 
     - Gitkraken
