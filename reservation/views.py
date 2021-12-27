@@ -10,7 +10,7 @@ from rest_framework import status
 from login.views import get_user
 from cs.serializers import *
 
-# 예약전체조회
+# 예약전체조회 및 삭제
 class ReservationList(APIView):
     def get(self, request):
         user = get_user(request) # access_token에서 user 누군지 꺼내기
@@ -31,7 +31,11 @@ class ReservationList(APIView):
 
     def delete(self, request):
         user = get_user(request)
-        inquiry_reservations = user.reservation_set.filter(state=Reservation.INQUIRY)
+        shop_type = request.query_params.get('shoptype', 'false')
+
+        if shop_type == "false":
+            return Response({"detail" : "enter a shop type"}, status=status.HTTP_400_BAD_REQUEST)
+        inquiry_reservations = user.reservation_set.filter(state=Reservation.INQUIRY, shop_type=shop_type)
         inquiry_reservations.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -76,7 +80,7 @@ class ReservationDetail(APIView):
         reservation.delete() #예약 제거
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-# 예약에 대한 리뷰조회, 수정
+# 예약에 대한 리뷰조회, 작성
 class ReservationReviewDetail(APIView):
 
     def get(self, request, pk):
