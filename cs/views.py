@@ -22,8 +22,7 @@ class ReviewList(APIView, PageNumberPagination):
 
 
 
-
-
+# 특정리뷰 수정
 class ReviewDetail(APIView):
     def patch(self, request, pk):
         review = get_object_or_404(Review, pk=pk)
@@ -33,15 +32,6 @@ class ReviewDetail(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk):
-        review = get_object_or_404(Review, pk= pk)
-        reservation = review.reservation
-        reservation.state = Reservation.UNREVIEWED
-        reservation.save()
-        
-        review.delete()
-
-        return Response({"result":"Delete completed"}, status=status.HTTP_204_NO_CONTENT)
 
 
 
