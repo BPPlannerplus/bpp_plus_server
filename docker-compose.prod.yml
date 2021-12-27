@@ -28,16 +28,7 @@ services:
       - media:/home/app/web/media
     ports:
       - "80:80"
+      - "433:433"
     depends_on:
       - web
 
-#  cron:
-#    container_name: cron
-#    build: ./config/cron
-#    depends_on:
-#      - web
-
-
-volumes:
-  static:
-  media:
