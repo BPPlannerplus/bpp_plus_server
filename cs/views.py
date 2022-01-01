@@ -8,7 +8,7 @@ from login.views import get_user
 from reservation.models import Reservation
 import json
 
-
+# 특정shop의 리뷰조회
 class ReviewList(APIView, PageNumberPagination):
     def get(self, request, pk):
         self.page_size = 20
@@ -17,8 +17,6 @@ class ReviewList(APIView, PageNumberPagination):
         serializer = OneShopReviewSerializer(result_page, many=True, context={"request": request})
 
         return self.get_paginated_response(serializer.data)
-
-
 
 
 
