@@ -12,6 +12,5 @@ def reservation_state_change():
             reservation.state = Reservation.INVALID # 리뷰작성불가
         elif reservation.state == Reservation.REVIEWED and reservation.reserved_date + datetime.timedelta(weeks=2) < datetime.date.today():
             reservation.review.editable = False # 수정불가
-            
 
 
