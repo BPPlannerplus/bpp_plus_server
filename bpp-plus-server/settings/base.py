@@ -69,7 +69,7 @@ INSTALLED_APPS = [
 
     # background tasks
     'background_task',
-    'django-crontab',
+    'django_crontab',
 ]
 
 CRONJOBS = [
