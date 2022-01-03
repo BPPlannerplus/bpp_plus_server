@@ -10,6 +10,11 @@ from rest_framework import status
 from login.views import get_user
 from cs.serializers import *
 
+#tasks
+from .tasks import reservation_state_change
+from background_task.models import Task
+
+
 # 예약전체조회 및 삭제
 class ReservationList(APIView):
     def get(self, request):
@@ -124,13 +129,5 @@ class ReservationReviewDetail(APIView):
 # 예약 상태 확인
 class ReservationCheck(APIView):
     def get(self, request):
-        user = get_user(request)
-        reservations = user.reservation_set.filter(state=Reservation.CONFIRMED)
-
-
-        for reservation in reservations: # confirmed인 예약들 돌아가면서 상태체크
-            if reservation.reserved_date < datetime.date.today():
-                reservation.state = Reservation.UNREVIEWED
-                reservation.save()
-
-        return Response(status=status.HTTP_200_OK)
+        reservation_state_change(repeat=Task.HOURLY)
+        return Response(status=status.HTTP_302_FOUND)
