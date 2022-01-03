@@ -8,7 +8,7 @@ from login.views import get_user
 from reservation.models import Reservation
 import json
 
-
+# 특정shop의 리뷰조회
 class ReviewList(APIView, PageNumberPagination):
     def get(self, request, pk):
         self.page_size = 20
@@ -20,10 +20,7 @@ class ReviewList(APIView, PageNumberPagination):
 
 
 
-
-
-
-
+# 특정리뷰 수정
 class ReviewDetail(APIView):
     def patch(self, request, pk):
         review = get_object_or_404(Review, pk=pk)
@@ -33,15 +30,6 @@ class ReviewDetail(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk):
-        review = get_object_or_404(Review, pk= pk)
-        reservation = review.reservation
-        reservation.state = Reservation.UNREVIEWED
-        reservation.save()
-        
-        review.delete()
-
-        return Response({"result":"Delete completed"}, status=status.HTTP_204_NO_CONTENT)
 
 
 

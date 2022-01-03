@@ -10,7 +10,12 @@ from rest_framework import status
 from login.views import get_user
 from cs.serializers import *
 
-# 예약전체조회
+#tasks
+from .tasks import reservation_state_change
+from background_task.models import Task
+
+
+# 예약전체조회 및 삭제
 class ReservationList(APIView):
     def get(self, request):
         user = get_user(request) # access_token에서 user 누군지 꺼내기
@@ -31,7 +36,23 @@ class ReservationList(APIView):
 
     def delete(self, request):
         user = get_user(request)
-        inquiry_reservations = user.reservation_set.filter(state=Reservation.INQUIRY)
+        shop_type = request.query_params.get('shoptype', 'false')
+
+        if shop_type == "false":
+            return Response({"detail" : "enter a shop type"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if shop_type == "studio":  # studio 전체목록 조회
+            shop_type = Shop.STUDIO
+        elif shop_type == "beautyshop":  # beautyshop 전체목록 조회
+            shop_type = Shop.BEAUTYSHOP
+        elif shop_type == "waxingshop":   # waxingshop 전체목록 조회
+            shop_type = Shop.WAXINGSHOP
+        elif shop_type == "tanningshop" :  # tanningshop 전체목록 조회
+            shop_type = Shop.TANNINGSHOP
+        else: # 철자틀리면
+            return Response({"detail" : "enter a right shop type"}, status=status.HTTP_400_BAD_REQUEST)
+
+        inquiry_reservations = user.reservation_set.filter(state=Reservation.INQUIRY, shop_type=shop_type)
         inquiry_reservations.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -64,7 +85,7 @@ class ReservationDetail(APIView):
         reservation.state = Reservation.CONFIRMED #문의중에서 예약확정으로 상태변경
         reservation.reserved_date = json.loads(request.body.decode('utf-8')).get('reserved_date')  # 예약날짜 저장
         reservation.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_204_NO_CONTNT)
 
     def delete(self, request, pk):
         user = get_user(request) # access_token에서 user 누군지 꺼내기
@@ -76,7 +97,7 @@ class ReservationDetail(APIView):
         reservation.delete() #예약 제거
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-# 예약에 대한 리뷰조회, 수정
+# 예약에 대한 리뷰조회, 작성
 class ReservationReviewDetail(APIView):
 
     def get(self, request, pk):
@@ -108,13 +129,5 @@ class ReservationReviewDetail(APIView):
 # 예약 상태 확인
 class ReservationCheck(APIView):
     def get(self, request):
-        user = get_user(request)
-        reservations = user.reservation_set.filter(state=Reservation.CONFIRMED)
-
-
-        for reservation in reservations: # confirmed인 예약들 돌아가면서 상태체크
-            if reservation.reserved_date < datetime.date.today():
-                reservation.state = Reservation.UNREVIEWED
-                reservation.save()
-
-        return Response(status=status.HTTP_200_OK)
+        reservation_state_change(repeat=Task.HOURLY)
+        return Response(status=status.HTTP_302_FOUND)
