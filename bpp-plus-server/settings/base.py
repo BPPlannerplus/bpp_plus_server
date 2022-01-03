@@ -67,15 +67,10 @@ INSTALLED_APPS = [
     'rest_auth.registration',
     'allauth.socialaccount.providers.kakao',
 
-    # crontab
-    'django_crontab'
+    # background tasks
+    'background_task',
 ]
 
-# cron job 추가 
-CRONJOBS = [
-    ('* * * * *', 'reservation.cron.reservation_state_change', '>> /home/ubuntu/srv/ubuntu/job.log'),
-    ('* * * * *', 'reservation.cron.hello', '>> /home/ubuntu/srv/ubuntu/hello.log')
-]
 
 
 SITE_ID = 1
