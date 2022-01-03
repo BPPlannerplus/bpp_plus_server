@@ -9,12 +9,14 @@ class Reservation(TimeStampMixin):
     CONFIRMED = 1
     REVIEWED = 2
     UNREVIEWED = 3
+    INVALID = 4
 
     STATE_CHOICES = (
-        (INQUIRY, 'inquiry'),
-        (CONFIRMED, 'confirmed'),
-        (REVIEWED, 'reviewed'),
-        (UNREVIEWED, 'unreviewed'),
+        (INQUIRY, 'inquiry'), # 예약문의
+        (CONFIRMED, 'confirmed'), # 예약확정
+        (REVIEWED, 'reviewed'), # 리뷰쓴
+        (UNREVIEWED, 'unreviewed'), # 2주안이면서 리뷰쓰지않은
+        (INVALID, 'invalid'),  # 수정불가능한
     )
 
     state = models.IntegerField(null=False, blank=False, choices=STATE_CHOICES)  # 0 : 문의중 , 1 : 예약확정, 2 : 리뷰완료, 3: 리뷰없이
