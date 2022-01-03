@@ -69,8 +69,13 @@ INSTALLED_APPS = [
 
     # background tasks
     'background_task',
+    'django-crontab',
 ]
 
+CRONJOBS = [
+    # ('* * * * *', 'reservation.cron.reservation_state_change'),
+    ('* * * * *', 'reservation.cron.hello', '>> /home/app/web/cron.log'),
+]
 
 
 SITE_ID = 1
