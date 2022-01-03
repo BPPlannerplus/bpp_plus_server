@@ -6,7 +6,7 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile.prod
-    command: gunicorn bpp-plus-server.wsgi:application --bind 0.0.0.0:8000 --timeout 90 --workers=3
+    command: python manage.py process_tasks & gunicorn bpp-plus-server.wsgi:application --bind 0.0.0.0:8000 --timeout 90 --workers=3
     environment:
       DJANGO_SETTINGS_MODULE: bpp-plus-server.settings.prod
     env_file:
