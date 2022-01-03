@@ -129,5 +129,5 @@ class ReservationReviewDetail(APIView):
 # 예약 상태 확인
 class ReservationCheck(APIView):
     def get(self, request):
-        reservation_state_change(repeat=Task.HOURLY)
+        reservation_state_change(repeat=Task.DAILY)
         return Response(status=status.HTTP_302_FOUND)

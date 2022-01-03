@@ -69,12 +69,6 @@ INSTALLED_APPS = [
 
     # background tasks
     'background_task',
-    'django_crontab',
-]
-
-CRONJOBS = [
-    # ('* * * * *', 'reservation.cron.reservation_state_change'),
-    ('* * * * *', 'reservation.cron.hello', '>> /home/app/web/cron.log'),
 ]
 
 
