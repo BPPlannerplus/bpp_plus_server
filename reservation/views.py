@@ -67,7 +67,8 @@ class AddReservation(APIView):
             return Response({"detail": "already reservation exist"}, status=status.HTTP_400_BAD_REQUEST)
         reservation = Reservation(state=Reservation.INQUIRY, reserved_date=None, user=get_user(request), shop=shop) #예약확정날짜는 비우고 문의중으로 추가
         reservation.save()
-        return Response({"result": "reservation create"}, status=status.HTTP_201_CREATED)
+        
+        return Response({"result": "reservation create", "reservation id" : reservation.id }, status=status.HTTP_201_CREATED)
 
 # reservation 수정, 취소
 class ReservationDetail(APIView):
