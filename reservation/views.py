@@ -36,7 +36,7 @@ class ReservationList(APIView):
 
     def delete(self, request):
         user = get_user(request)
-        shop_type = request.query_params.get('shoptype', 'false')
+        shop_type = request.query_params.get('shop_type', 'false')
 
         if shop_type == "false":
             return Response({"detail" : "enter a shop type"}, status=status.HTTP_400_BAD_REQUEST)
@@ -85,7 +85,7 @@ class ReservationDetail(APIView):
         reservation.state = Reservation.CONFIRMED #문의중에서 예약확정으로 상태변경
         reservation.reserved_date = json.loads(request.body.decode('utf-8')).get('reserved_date')  # 예약날짜 저장
         reservation.save()
-        return Response(status=status.HTTP_204_NO_CONTNT)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     def delete(self, request, pk):
         user = get_user(request) # access_token에서 user 누군지 꺼내기
