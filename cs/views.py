@@ -36,9 +36,10 @@ class ReviewDetail(APIView):
 class ComplainList(APIView):
     def post(self, request, pk):
         user = get_user(request)
+        review = get_object_or_404(Review, pk=pk)
         reason = json.loads(request.body.decode('utf-8')).get('reason')
         contents = json.loads(request.body.decode('utf-8')).get('contents')
-        Complain.objects.create(user=user.id, review=pk, reason= reason, contents=contents)
+        Complain.objects.create(user=user, review=review, reason= reason, contents=contents)
 
         return Response({"result":"create complain"}, status=status.HTTP_201_CREATED)
 

@@ -52,7 +52,7 @@ class ReservationList(APIView):
         else: # 철자틀리면
             return Response({"detail" : "enter a right shop type"}, status=status.HTTP_400_BAD_REQUEST)
 
-        inquiry_reservations = user.reservation_set.filter(state=Reservation.INQUIRY, shop_type=shop_type)
+        inquiry_reservations = user.reservation_set.filter(state=Reservation.INQUIRY, shop__shop_type=shop_type)
         inquiry_reservations.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
