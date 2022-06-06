@@ -17,7 +17,6 @@ except ImportError:
 from requests.exceptions import HTTPError
 
 from rest_framework import serializers
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from .models import User
 import os,environ
@@ -156,19 +155,6 @@ class SocialLoginSerializer(serializers.Serializer):
         login.account.user.save()  # uid 넣어준거 저장
         return attrs
 
-
-
-#customize payload
-# class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
-#     @classmethod
-#     def get_token(cls, user):
-#         token = super().get_token(user)
-#
-#         # Add custom claims
-#         token['username'] = user.username
-#         token['uid'] = user.uid
-#
-#         return token
 
 
 # email기 -> uid바꾸기 

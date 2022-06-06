@@ -7,5 +7,5 @@ from .models import User
 # User를 컨트롤 할 class를 CustomUserAdmin으로 선언해봤어 입니다.
 @admin.register(User)
 class CustomUserAdmin(admin.ModelAdmin):
-    list_display = ('id','uid','username','exp','refresh',)
-    list_display_links = ('id','uid','username','exp','refresh',)
+    list_display = ('id','uid','username','exp','refresh','created_at', 'updated_at')
+    list_display_links = ('id','uid','username','exp','refresh', 'created_at', 'updated_at')
